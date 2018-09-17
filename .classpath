@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="conf"/>
+	<classpathentry kind="lib" path="lib/sequence-library-1.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/sqljet-1.1.11.jar"/>
+	<classpathentry kind="lib" path="lib/svnkit-1.9.2.jar" sourcepath="C:/Users/Administrator/AppData/Local/Temp/decompiler/source/svnkit-1.9.2-sources-1533874168439.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.6.0_43"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

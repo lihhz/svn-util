@@ -1,0 +1,46 @@
+###注意路径统一使用正斜杠表示
+
+#################################################################
+#					svn信息配置										#
+#				    配置自己的用户名和密码									#
+#################################################################
+svnUri=http://svn.ufgov.com.cn/A7/source/project/trunk/BJ/注册会计师行业监管系统/cpams/cpams
+userAccount=
+password=
+#################################################################
+#					Windows下路径表示方法								#
+#################################################################
+##项目路径（包含项目名）
+proectPath=E:/data/workspace/cpams
+#/media/lihh/新加卷/data/workspace/cpams
+#E:/data/workspace/cpams
+##js css 等
+targetPath=C:/Users/Administrator/Desktop/cpams
+#/home/lihh/Desktop/cpams
+#C:/Users/Administrator/Desktop/cpams
+#开始版本:结束版本
+version=:37247
+#################################################################
+
+#################################################################
+#					Linux下路径表示方法								#
+#################################################################
+##项目路径（包含项目名）
+#proectPath=/media/lihh/新加卷/data/workspace/cpams
+##js css 等
+#targetPath=/home/lihh/Desktop/cpams
+#开始版本:结束版本
+#version=37240:37244
+#################################################################
+
+
+#################################################################
+#					弃用的配置										#
+#################################################################
+##要复制的classes文件夹的路径
+#classPath=/media/lihh/新加卷/data/workspace/cpams/target/classes
+##svn diff -r 37047:37051 --summarize
+##svn st
+#cmd=cd /media/lihh/新加卷/data/workspace/cpams&&svn st
+##classes conf中的properties
+#disRootPath=/home/lihh/Desktop/cpams/WEB-INF/classes
