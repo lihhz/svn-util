@@ -66,11 +66,13 @@ public class SvnMain {
 							final String from = PROJECT_PATH + File.separator + output + relativePath;
 							// System.out.println(" 将从路径："+from+"拷贝文件！");
 							if (oldPath.endsWith(".java")) {
-								FileUtil.copyFile(from.split("\\.")[0] + ".class",
+								//注意：路径中有可能也带有点
+								String filePath = from.substring(0, from.lastIndexOf("."));
+								FileUtil.copyFile(filePath + ".class",
 										TARGET_PAHT + "/WEB-INF/classes/" + relativePath.split("\\.")[0] + ".class");
 								// 对内部类的支持
 								// TODO:测试这个/在Linux和Windows下是否相同
-								File parentDir = new File(from.split("\\.")[0] + ".class").getParentFile();
+								File parentDir = new File(filePath + ".class").getParentFile();
 								File[] fileList = parentDir.listFiles();
 								if (fileList != null) {
 									for (File file : fileList) {
