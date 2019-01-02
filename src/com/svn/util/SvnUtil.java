@@ -1,5 +1,8 @@
 package com.svn.util;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.Map;
@@ -88,17 +91,20 @@ public class SvnUtil {
 			log.setSingleTarget(SvnTarget.fromURL(SVNURL.parseURIEncoded(PropertyUtil.getSvnUri())));
 	
 			System.out.println(StringUtils.COUNTER++ + ".修改内容如下");
+			final StringBuffer msg = new StringBuffer();
 			log.setReceiver(new ISvnObjectReceiver<SVNLogEntry>() {
 				public void receive(SvnTarget svnTarget, SVNLogEntry svnLogEntry) throws SVNException {
 					// 每个版本执行一次
 					// System.out.println("版本:" + arg1.getRevision() + "===========作者：" + arg1.getAuthor() + "======时间：" + sdf2.format(arg1.getDate()));
-					System.out.println("   "+svnLogEntry.getMessage());
+					String str = svnLogEntry.getMessage();
+					msg.append(str).append("\n");
+					System.out.println("   " + str);
 					Map<String, SVNLogEntryPath> map = svnLogEntry.getChangedPaths();
 					if (map.size() > 0) {
 						Set<String> set = map.keySet();
 						for (Iterator<String> iterator = set.iterator(); iterator.hasNext();) {
 							String key = (String) iterator.next();
-							sb.append(key.replace("/source/project/trunk/BJ/注册会计师行业监管系统/cpams/cpams/", "")).append("\r\n");
+							sb.append(key.replace(PropertyUtil.getUnnecessaryStr(), "")).append("\r\n");
 							// SVNLogEntryPath path = map.get(key);
 							// System.out.println(typeDic.get(path.getType() + "") + ":" + key);
 							// handleFile(key);
@@ -107,6 +113,11 @@ public class SvnUtil {
 				}
 			});
 			log.run();
+			// 将升级信息添加到粘贴板
+			Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();  
+	        clip.setContents(new StringSelection(msg.toString()), null);
+			System.out.println();
+			System.out.println("升级内容已复制到剪贴板");
 			System.out.println();
 		}catch( SVNAuthenticationException e){
 			e.printStackTrace();

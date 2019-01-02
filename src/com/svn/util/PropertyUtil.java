@@ -167,6 +167,9 @@ public class PropertyUtil {
 	public static String getVersion() {
 		return getProperty("version");
 	}
+	public static String getUnnecessaryStr() {
+		return getProperty("unnecessaryStr");
+	}
 	
 	public static void main(String[] args) throws UnsupportedEncodingException {
 		//从当前package下查找文件,注意java文件被编译后是不存在的，只能查找class文件而不是java文件
