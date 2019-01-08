@@ -1,4 +1,4 @@
-package com.svn.util;
+package com.svn.util.useless;
 
 import java.io.File;
 

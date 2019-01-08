@@ -1,7 +1,5 @@
 package com.svn.util.file;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -14,12 +12,10 @@ import com.svn.util.StringUtils;
  * 操作文件<br/>
  * 路径判断<br/>
  * 
- * @author Administrator
+ * @author lihhz
  *
  */
 public class FileUtil {
-	
-
 
 	/**
 	 * 判断系统类型
@@ -27,6 +23,7 @@ public class FileUtil {
 	 * @return
 	 */
 	public static boolean IS_WIN_OS = System.getProperty("os.name").toLowerCase().startsWith("win");
+
 	/**
 	 * 删除文件夹
 	 * 
@@ -100,8 +97,8 @@ public class FileUtil {
 		OutputStream os = null;
 
 		// 使用BufferedInputStream比直接使用InputStream更高效
-		BufferedInputStream bis = null;
-		BufferedOutputStream bos = null;
+		// BufferedInputStream bis = null;
+		// BufferedOutputStream bos = null;
 		try {
 			oldPath = getRealFilePath(oldPath);
 			newPath = getRealFilePath(newPath);
@@ -118,37 +115,41 @@ public class FileUtil {
 			File oldfile = new File(oldPath);
 			if (oldfile.exists()) { // 文件存在时
 				is = new FileInputStream(oldPath); // 读入原文件
-				bis = new BufferedInputStream(is);
+				// bis = new BufferedInputStream(is);
 
 				os = new FileOutputStream(newPath);
-				bos = new BufferedOutputStream(os);
-
+				// bos = new BufferedOutputStream(os);
+				int byteread = 0;
 				byte[] buffer = new byte[1024];
-				 while ((bis.read(buffer)) != -1) {
-					// bos.write(buffer, 0, length);
+				while ((byteread = is.read(buffer)) != -1) {
+					os.write(buffer, 0, byteread);
+					// 用下边代码会产生文件内容不正确
 					// bos.write内部实际上调用如下write(b, 0, b.length);，因此可以不需要做的这么复杂
-					bos.write(buffer);
+					// os.write(buffer);
 
 				}
 				// 缓冲区的内容写入到文件
-				bos.flush();
+				os.flush();
 			}
 		} catch (Exception e) {
 			System.out.println("复制单个文件操作出错");
 			e.printStackTrace();
 		} finally {
 			try {
-				if (bis != null) {
-					bis.close();
-				}
-				if (bos != null) {
-					bos.close();
-				}
+				// if (bis != null) {
+				// bis.close();
+				// }
+				// if (bos != null) {
+				// bos.close();
+				// }
 				// 只需要关闭装饰类即可，因为会在内部调用被装饰类的close。查看源码以获得证据
-				/*
-				 * if (is != null) { is.close(); } if (os != null) { os.flush();
-				 * os.close(); }
-				 */
+				if (is != null) {
+					is.close();
+				}
+				if (os != null) {
+					os.flush();
+					os.close();
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

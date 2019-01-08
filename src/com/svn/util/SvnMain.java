@@ -18,6 +18,7 @@ import com.svn.util.file.ResolveClasspath;
 import com.svn.util.file.ZipUtil;
 import com.svn.util.mail.SendEmail;
 import com.svn.util.system.ClipboardSupport;
+import com.svn.util.system.ConsoleUtil;
 
 public class SvnMain {
 

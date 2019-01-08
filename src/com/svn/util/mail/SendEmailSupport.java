@@ -39,10 +39,10 @@ class SendEmailSupport {
         return this;
     }
  
-    private List<String> recipientT0List = new ArrayList<>();//收件地址
-    private List<String> recipientCCList = new ArrayList<>();//密送地址
-    private List<String> recipientBCCList = new ArrayList<>();//抄送地址
-    private List<String> filePath = new ArrayList<>();//附件
+    private List<String> recipientT0List = new ArrayList<String>();//收件地址
+    private List<String> recipientCCList = new ArrayList<String>();//密送地址
+    private List<String> recipientBCCList = new ArrayList<String>();//抄送地址
+    private List<String> filePath = new ArrayList<String>();//附件
  
     public SendEmailSupport setDebug(boolean sessionDebug) {
         debug = sessionDebug;

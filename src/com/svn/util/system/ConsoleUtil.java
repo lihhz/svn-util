@@ -1,8 +1,9 @@
-package com.svn.util;
+package com.svn.util.system;
 
 import java.io.Console;
 import java.util.Scanner;
 
+import com.svn.util.StringUtils;
 import com.svn.util.file.PropertyUtil;
 
 /**

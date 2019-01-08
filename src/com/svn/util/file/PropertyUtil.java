@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Properties;
 
@@ -171,30 +169,30 @@ public class PropertyUtil {
 		return getProperty("unnecessaryStr");
 	}
 	
-	public static void main(String[] args) throws UnsupportedEncodingException {
-		//从当前package下查找文件,注意java文件被编译后是不存在的，只能查找class文件而不是java文件
-		URL path = PropertyUtil.class.getResource("FileUtil.class");
-		System.out.println(path);
-		//file:/media/lihh/%e6%96%b0%e5%8a%a0%e5%8d%b7/workspace/svn-util-v4.4/bin/com/svn/util/FileUtil.class
-		
-		//因为是从当前package下寻找，没有找到所以返回null
-		path = PropertyUtil.class.getResource("user_info.ini");
-		System.out.println(path);
-		//null
-
-		//从classpath下寻找,但是不会自动的递归下边的package，所以如果要寻找package或者文件夹，则需要写从classpath开始的路径
-		path = PropertyUtil.class.getResource("/user_info.ini");
-		System.out.println(path);
-		//file:/media/lihh/%e6%96%b0%e5%8a%a0%e5%8d%b7/workspace/svn-util-v4.4/bin/user_info.ini
-
-		//相当于没有带/的class.getResource()
-		path = PropertyUtil.class.getClassLoader().getResource("/user_info.ini");
-		System.out.println(path);
-		//null
-
-		//相当于带/的class.getResource()
-		path = PropertyUtil.class.getClassLoader().getResource("user_info.ini");
-		System.out.println(path);
-		//file:/media/lihh/%e6%96%b0%e5%8a%a0%e5%8d%b7/workspace/svn-util-v4.4/bin/user_info.ini
-	}
+//	public static void main(String[] args) throws UnsupportedEncodingException {
+//		//从当前package下查找文件,注意java文件被编译后是不存在的，只能查找class文件而不是java文件
+//		URL path = PropertyUtil.class.getResource("FileUtil.class");
+//		System.out.println(path);
+//		//file:/media/lihh/%e6%96%b0%e5%8a%a0%e5%8d%b7/workspace/svn-util-v4.4/bin/com/svn/util/FileUtil.class
+//		
+//		//因为是从当前package下寻找，没有找到所以返回null
+//		path = PropertyUtil.class.getResource("user_info.ini");
+//		System.out.println(path);
+//		//null
+//
+//		//从classpath下寻找,但是不会自动的递归下边的package，所以如果要寻找package或者文件夹，则需要写从classpath开始的路径
+//		path = PropertyUtil.class.getResource("/user_info.ini");
+//		System.out.println(path);
+//		//file:/media/lihh/%e6%96%b0%e5%8a%a0%e5%8d%b7/workspace/svn-util-v4.4/bin/user_info.ini
+//
+//		//相当于没有带/的class.getResource()
+//		path = PropertyUtil.class.getClassLoader().getResource("/user_info.ini");
+//		System.out.println(path);
+//		//null
+//
+//		//相当于带/的class.getResource()
+//		path = PropertyUtil.class.getClassLoader().getResource("user_info.ini");
+//		System.out.println(path);
+//		//file:/media/lihh/%e6%96%b0%e5%8a%a0%e5%8d%b7/workspace/svn-util-v4.4/bin/user_info.ini
+//	}
 }

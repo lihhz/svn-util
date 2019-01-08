@@ -25,7 +25,7 @@ public class SendEmail {
 
 	public static void sendEmail(String title,String content,String attachPath){
 
-		List<String> toList = new ArrayList<>();
+		List<String> toList = new ArrayList<String>();
 		String[] arr = recipientToAddress.split(";");
 		if (arr.length > 0) {
 			for (int i = 0; i < arr.length; i++) {
@@ -33,7 +33,7 @@ public class SendEmail {
 				toList.add(arr[i]);
 			}
 		}
-		List<String> bccList = new ArrayList<>();
+		List<String> bccList = new ArrayList<String>();
 		String[] bccarr = recipientCcAddress.split(";");
 		if (bccarr.length > 0) {
 			for (int i = 0; i < bccarr.length; i++) {

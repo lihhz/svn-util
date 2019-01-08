@@ -23,6 +23,7 @@ import org.tmatesoft.svn.core.wc2.SvnTarget;
 import com.svn.util.encrypt.DeEnCode;
 import com.svn.util.file.PropertyUtil;
 import com.svn.util.system.ClipboardSupport;
+import com.svn.util.system.ConsoleUtil;
 /**
  * 使用svnkit将对比内容导出为string
  * @author lihhz

@@ -1,13 +1,13 @@
 package com.svn.util.encrypt;  
   
 import java.nio.charset.Charset;  
-  
+
 /**
  * 使用异或简单加密解密
  * @author Administrator
  *
  */
-public class DeEnCode {  
+public class DeEnCode {
   
     private static final Charset charset = Charset.forName("UTF-8");
     //这个key可以作为配置做私钥
