@@ -3,6 +3,8 @@ package com.svn.util;
 import java.io.Console;
 import java.util.Scanner;
 
+import com.svn.util.file.PropertyUtil;
+
 /**
  * 命令行工具。<br/>
  * 主要目的有两个<br/>

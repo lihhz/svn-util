@@ -12,11 +12,17 @@ import javax.swing.filechooser.FileSystemView;
 
 import org.tmatesoft.svn.core.SVNException;
 
+import com.svn.util.file.FileUtil;
+import com.svn.util.file.PropertyUtil;
+import com.svn.util.file.ResolveClasspath;
+import com.svn.util.file.ZipUtil;
+import com.svn.util.mail.SendEmail;
+import com.svn.util.system.ClipboardSupport;
+
 public class SvnMain {
 
 	/**
 	 * 核心方法
-	 * 
 	 * @param content
 	 * @throws RuntimeException
 	 * @throws FileNotFoundException
@@ -120,6 +126,7 @@ public class SvnMain {
 		try {
 			// Scanner scanner = new Scanner(System.in);
 			System.out.println(StringUtils.COUNTER++ + ".是否生成zip压缩文件?(y/n)");
+			boolean hasZip = false;
 			// 判断是否还有输入
 			while (ConsoleUtil.hasNext()) {
 				String str = ConsoleUtil.readLine();
@@ -127,6 +134,7 @@ public class SvnMain {
 					ZipUtil.toZip(FileUtil.getRealFilePath(targetPath),
 							new FileOutputStream(FileUtil.getRealFilePath(targetPath + ".zip")), true);
 					System.out.println("==文件压缩成功.");
+					hasZip = true;
 				}
 				if (str.equalsIgnoreCase("y") || str.equalsIgnoreCase("n")) {
 					break;
@@ -145,6 +153,23 @@ public class SvnMain {
 					break;
 				} else {
 					System.out.println("输入字符非法,请重新输入!");
+				}
+			}
+			if(hasZip){
+				System.out.println(StringUtils.COUNTER++ + ".是否生成默认邮件?(y/n)");
+				while (ConsoleUtil.hasNext()) {
+					String str = ConsoleUtil.readLine();
+					if (str.equalsIgnoreCase("y")) {
+						System.out.println(ClipboardSupport.getSysClipboardText());
+						SendEmail.sendEmail("升级内容", "升级内容:<ol>"+ClipboardSupport.getSysClipboardText()+"</ol>", 
+								FileUtil.getRealFilePath(targetPath + ".zip"));
+						System.out.println("之前生成的文件夹删除成功");
+					}
+					if (str.equalsIgnoreCase("y") || str.equalsIgnoreCase("n")) {
+						break;
+					} else {
+						System.out.println("输入字符非法,请重新输入!");
+					}
 				}
 			}
 		} catch (Exception e) {

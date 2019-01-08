@@ -1,4 +1,4 @@
-package com.svn.util;
+package com.svn.util.file;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -7,6 +7,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import com.svn.util.StringUtils;
 
 /**
  * 操作文件<br/>

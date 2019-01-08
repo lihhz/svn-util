@@ -4,8 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import com.svn.util.FileUtil;
-import com.svn.util.PropertyUtil;
+import com.svn.util.file.FileUtil;
+import com.svn.util.file.PropertyUtil;
 
 /**
  * 执行命令帮助类

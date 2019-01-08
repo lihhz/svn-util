@@ -1,12 +1,11 @@
 package com.svn.util;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.tmatesoft.svn.core.SVNAuthenticationException;
 import org.tmatesoft.svn.core.SVNException;
@@ -22,6 +21,8 @@ import org.tmatesoft.svn.core.wc2.SvnRevisionRange;
 import org.tmatesoft.svn.core.wc2.SvnTarget;
 
 import com.svn.util.encrypt.DeEnCode;
+import com.svn.util.file.PropertyUtil;
+import com.svn.util.system.ClipboardSupport;
 /**
  * 使用svnkit将对比内容导出为string
  * @author lihhz
@@ -97,7 +98,11 @@ public class SvnUtil {
 					// 每个版本执行一次
 					// System.out.println("版本:" + arg1.getRevision() + "===========作者：" + arg1.getAuthor() + "======时间：" + sdf2.format(arg1.getDate()));
 					String str = svnLogEntry.getMessage();
-					msg.append(str).append("\n");
+					if(!str.trim().equals("")){
+						Pattern p = Pattern.compile("\\s*|\t|\r|\n");   
+			            Matcher m = p.matcher(str);   
+						msg.append("<li>").append(m.replaceAll("")).append("</li>");
+					}
 					System.out.println("   " + str);
 					Map<String, SVNLogEntryPath> map = svnLogEntry.getChangedPaths();
 					if (map.size() > 0) {
@@ -114,8 +119,7 @@ public class SvnUtil {
 			});
 			log.run();
 			// 将升级信息添加到粘贴板
-			Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();  
-	        clip.setContents(new StringSelection(msg.toString()), null);
+			ClipboardSupport.setSysClipboardText(msg.toString());
 			System.out.println();
 			System.out.println("升级内容已复制到剪贴板");
 			System.out.println();
@@ -131,42 +135,42 @@ public class SvnUtil {
 		}
 		return sb.toString();
 	}
-	public static void main(String[] args) {
-		try{
-			// 实例化客户端管理类
-			final SvnOperationFactory svnOperationFactory = new SvnOperationFactory();
-			svnOperationFactory.setAuthenticationManager(BasicAuthenticationManager.newInstance("", "".toCharArray()));// svn用户名密码
-			
-			final SvnLog log = svnOperationFactory.createLog();
-			log.addRange(SvnRevisionRange.create(SVNRevision.create(37707), SVNRevision.create(37714)));
-			log.setDiscoverChangedPaths(true);
-			log.setSingleTarget(SvnTarget.fromURL(SVNURL.parseURIEncoded("http://svn.ufgov.com.cn/A7/source/project/trunk/BJ/\u6ce8\u518c\u4f1a\u8ba1\u5e08\u884c\u4e1a\u76d1\u7ba1\u7cfb\u7edf/cpams/cpams")));
-	
-			System.out.println(StringUtils.COUNTER++ + ".修改内容如下");
-			log.setReceiver(new ISvnObjectReceiver<SVNLogEntry>() {
-				public void receive(SvnTarget svnTarget, SVNLogEntry svnLogEntry) throws SVNException {
-					// 每个版本执行一次
-//					 System.out.println("版本:" + arg1.getRevision() + "===========作者：" + arg1.getAuthor() + "======时间：" + sdf2.format(arg1.getDate()));
-					System.out.println("   "+svnLogEntry.getMessage());
-					Map<String, SVNLogEntryPath> map = svnLogEntry.getChangedPaths();
-					if (map.size() > 0) {
-						Set<String> set = map.keySet();
-						for (Iterator<String> iterator = set.iterator(); iterator.hasNext();) {
-							String key = (String) iterator.next();
-//							sb.append(key.replace("/source/project/trunk/BJ/注册会计师行业监管系统/cpams/cpams/", "")).append("\r\n");
-							 SVNLogEntryPath path = map.get(key);
-//							 System.out.println(typeDic.get(path.getType() + "") + ":" + key);
-							System.out.println(key+","+path);
-						}
-					}
-				}
-			});
-		}catch( SVNAuthenticationException e){
-			System.out.println("鉴权失败!"+e.getMessage());
-		} catch (SVNException e) {
-			e.printStackTrace();
-		}finally{
-		}
-	
-	}
+//	public static void main(String[] args) {
+//		try{
+//			// 实例化客户端管理类
+//			final SvnOperationFactory svnOperationFactory = new SvnOperationFactory();
+//			svnOperationFactory.setAuthenticationManager(BasicAuthenticationManager.newInstance("", "".toCharArray()));// svn用户名密码
+//			
+//			final SvnLog log = svnOperationFactory.createLog();
+//			log.addRange(SvnRevisionRange.create(SVNRevision.create(37707), SVNRevision.create(37714)));
+//			log.setDiscoverChangedPaths(true);
+//			log.setSingleTarget(SvnTarget.fromURL(SVNURL.parseURIEncoded("http://svn.ufgov.com.cn/A7/source/project/trunk/BJ/\u6ce8\u518c\u4f1a\u8ba1\u5e08\u884c\u4e1a\u76d1\u7ba1\u7cfb\u7edf/cpams/cpams")));
+//	
+//			System.out.println(StringUtils.COUNTER++ + ".修改内容如下");
+//			log.setReceiver(new ISvnObjectReceiver<SVNLogEntry>() {
+//				public void receive(SvnTarget svnTarget, SVNLogEntry svnLogEntry) throws SVNException {
+//					// 每个版本执行一次
+////					 System.out.println("版本:" + arg1.getRevision() + "===========作者：" + arg1.getAuthor() + "======时间：" + sdf2.format(arg1.getDate()));
+//					System.out.println("   "+svnLogEntry.getMessage());
+//					Map<String, SVNLogEntryPath> map = svnLogEntry.getChangedPaths();
+//					if (map.size() > 0) {
+//						Set<String> set = map.keySet();
+//						for (Iterator<String> iterator = set.iterator(); iterator.hasNext();) {
+//							String key = (String) iterator.next();
+////							sb.append(key.replace("/source/project/trunk/BJ/注册会计师行业监管系统/cpams/cpams/", "")).append("\r\n");
+//							 SVNLogEntryPath path = map.get(key);
+////							 System.out.println(typeDic.get(path.getType() + "") + ":" + key);
+//							System.out.println(key+","+path);
+//						}
+//					}
+//				}
+//			});
+//		}catch( SVNAuthenticationException e){
+//			System.out.println("鉴权失败!"+e.getMessage());
+//		} catch (SVNException e) {
+//			e.printStackTrace();
+//		}finally{
+//		}
+//	
+//	}
 }
