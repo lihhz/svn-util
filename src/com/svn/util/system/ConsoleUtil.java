@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import com.svn.util.StringUtils;
 import com.svn.util.file.PropertyUtil;
+import com.svn.util.log.Logger;
 
 /**
  * 命令行工具。<br/>
@@ -31,7 +32,7 @@ public class ConsoleUtil {
 		} else {
 			console = System.console();
 			if (console == null) {
-				System.out.println("应用程序无法获取当前操作系统的控制台，程序退出！");
+				Logger.error("应用程序无法获取当前操作系统的控制台，程序退出！");
 				System.exit(0);
 			}
 		}
@@ -44,7 +45,6 @@ public class ConsoleUtil {
 	 */
 	public static String readPassword(String desc) {
 		if (isDebug) {
-			System.out.println(desc);
 			return scanner.next();
 		} else {
 			return String.valueOf(console.readPassword(desc));
@@ -59,12 +59,15 @@ public class ConsoleUtil {
 	}
 
 	private static String getLine(String desc) {
+		String input;
 		if (isDebug) {
 			System.out.println(desc);
-			return scanner.next();
+			input = scanner.next();
 		} else {
-			return console.readLine(desc);
+			input = console.readLine(desc);
 		}
+		Logger.closeConsoleLogger(desc + input);
+		return input;
 	}
 
 	public static boolean hasNext() {

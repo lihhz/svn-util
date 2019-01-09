@@ -4,6 +4,9 @@ import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.mail.*;
 import javax.mail.internet.*;
+
+import com.svn.util.log.Logger;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -107,7 +110,7 @@ class SendEmailSupport {
      */
     public SendEmailSupport createMail(String title, String datas, String type) {
         if (mailAccount.length() == 0 || mailAccount.equals(null)) {
-            System.err.println("发件地址不存在！");
+            Logger.warn("发件地址不存在！");
             return this;
         }
         if (myNickName == null) {
@@ -141,7 +144,7 @@ class SendEmailSupport {
             if (callback != null)
                 callback.error("message error ", e);
             sync = false;
-            System.out.println("生成邮件失败！请自行编辑邮件");
+            Logger.error("生成邮件失败！请自行编辑邮件");
         }
         return this;
     }
@@ -186,7 +189,6 @@ class SendEmailSupport {
         if (recipientT0List.size() > 0) {
             InternetAddress[] sendTo = new InternetAddress[recipientT0List.size()];
             for (int i = 0; i < recipientT0List.size(); i++) {
-                System.out.println("发送到:" + recipientT0List.get(i));
                 sendTo[i] = new InternetAddress(recipientT0List.get(i), "", "UTF-8");
             }
             message.addRecipients(MimeMessage.RecipientType.TO, sendTo);
@@ -198,7 +200,6 @@ class SendEmailSupport {
         if (recipientCCList.size() > 0) {
             InternetAddress[] sendTo = new InternetAddress[recipientCCList.size()];
             for (int i = 0; i < recipientCCList.size(); i++) {
-                System.out.println("发送到:" + recipientCCList.get(i));
                 sendTo[i] = new InternetAddress(recipientCCList.get(i), "", "UTF-8");
             }
             message.addRecipients(MimeMessage.RecipientType.CC, sendTo);
@@ -210,7 +211,6 @@ class SendEmailSupport {
         if (recipientBCCList.size() > 0) {
             InternetAddress[] sendTo = new InternetAddress[recipientBCCList.size()];
             for (int i = 0; i < recipientBCCList.size(); i++) {
-                System.out.println("发送到:" + recipientBCCList.get(i));
                 sendTo[i] = new InternetAddress(recipientBCCList.get(i), "", "UTF-8");
             }
             message.addRecipients(MimeMessage.RecipientType.BCC, sendTo);
@@ -225,7 +225,7 @@ class SendEmailSupport {
             MimeBodyPart messageBodyPart = new MimeBodyPart();
             // 选择出每一个附件名
             String pathName = filePath.get(i);
-            System.out.println("添加附件 ====>" + pathName);
+            Logger.info("添加附件 ====>" + pathName);
             // 得到数据源
             FileDataSource fds = new FileDataSource(pathName);
             // 得到附件本身并至入BodyPart
@@ -292,7 +292,7 @@ class SendEmailSupport {
                 SMTPPort = "465";
                 break;
             default:
-                System.err.println("暂时不支持此账号作为服务账号发送邮件！");
+            	Logger.warn("暂时不支持此账号作为服务账号发送邮件！"+mailAccount);
                 return;
         }
         Properties prop = new Properties();

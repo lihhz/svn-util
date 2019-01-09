@@ -12,6 +12,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.svn.util.log.Logger;
+
 /**
  * 解析.classpath文件
  * 
@@ -30,7 +32,7 @@ public class ResolveClasspath {
 		try {
 			File classpath = getClasspath();
 			if(classpath == null || !classpath.exists()){
-				System.out.println("没有找到.classpath文件！程序退出");
+				Logger.error("没有找到.classpath文件！程序退出");
 				System.exit(0);
 			}
 			
@@ -53,6 +55,7 @@ public class ResolveClasspath {
 				}
 			}
 		}catch (Exception e) {
+			Logger.error("发生错误！程序退出");
 			e.printStackTrace();
 			System.exit(0);
 		}

@@ -3,13 +3,13 @@ package com.svn.util.mail;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import com.svn.util.file.PropertyUtil;
+import com.svn.util.log.Logger;
 
 public class SendEmail {
-
+	
 	// 发件人地址
 //	private static String senderAddress = PropertyUtil.getProperty("senderAddress");
 	// 收件人地址
@@ -25,22 +25,8 @@ public class SendEmail {
 
 	public static void sendEmail(String title,String content,String attachPath){
 
-		List<String> toList = new ArrayList<String>();
-		String[] arr = recipientToAddress.split(";");
-		if (arr.length > 0) {
-			for (int i = 0; i < arr.length; i++) {
-				System.out.println("发送到:" + arr[i]);
-				toList.add(arr[i]);
-			}
-		}
-		List<String> bccList = new ArrayList<String>();
-		String[] bccarr = recipientCcAddress.split(";");
-		if (bccarr.length > 0) {
-			for (int i = 0; i < bccarr.length; i++) {
-				System.out.println("抄送到:" + bccarr[i]);
-				bccList.add(bccarr[i]);
-			}
-		}
+		Logger.info("发送到:" + recipientToAddress);
+		Logger.info("抄送到:" + recipientCcAddress);
 
 		new SendEmailSupport(senderAccount, senderPassword).setDebug(true)
 //		.setMyNickName("这是我的昵称")
@@ -49,9 +35,9 @@ public class SendEmail {
 				// .addFile(List<String> list)//添加附件集合
 				.setSaveEmail(emlFilePath)// 保存邮件
 				// .addRecipientT0("251716795@qq.com")//添加收件人地址
-				.addRecipientT0(toList)// 添加收件人地址集合
+				.addRecipientT0(Arrays.asList(recipientToAddress.split(";")))// 添加收件人地址集合
 				// .addRecipientCC(map)//添加密送收件人地址
-				.addRecipientCC(bccList)// 添加抄送收件人地址
+				.addRecipientCC(Arrays.asList(recipientCcAddress.split(";")))// 添加抄送收件人地址
 //				.createMail("标题", "发送的内容", "text/html;charset=utf-8").sendEmail(new SendEmail.Callback() {
 //					@Override
 //					public void success(String s) {
@@ -65,10 +51,12 @@ public class SendEmail {
 //					}
 //				});
 		.createMail(title, content, "text/html;charset=utf-8");
+		Logger.info("邮件已生成，将打开默认邮件客户端！邮件路径为："+ emlFilePath);
 		try {
 			Desktop.getDesktop().open(new File(emlFilePath));
+			Logger.info("邮件客户端已打开，请再次编辑后发送！");
 		} catch (IOException e) {
-			System.out.println("打开邮件客户端失败，请手动打开邮件！邮件路径为："+ emlFilePath);
+			Logger.error("打开邮件客户端失败，请手动打开邮件！邮件路径为："+ emlFilePath);
 		}
 	}
 	

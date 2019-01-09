@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import com.svn.util.log.Logger;
 /**
  * ZipUtils
  * @author 	ZENG.XIAO.YAN
@@ -35,7 +37,7 @@ public class ZipUtil {
 			File sourceFile = new File(srcDir);
 			compress(sourceFile,zos,sourceFile.getName(),KeepDirStructure);
 			long end = System.currentTimeMillis();
-			System.out.println("压缩完成，耗时：" + (end - start) +" ms");
+			Logger.info("压缩完成，耗时：" + (end - start) +" ms");
 		} catch (Exception e) {
 			throw new RuntimeException("zip error from ZipUtils",e);
 		}finally{
@@ -73,7 +75,7 @@ public class ZipUtil {
 				in.close();
 			}
 			long end = System.currentTimeMillis();
-			System.out.println("压缩完成，耗时：" + (end - start) +" ms");
+			Logger.info("压缩完成，耗时：" + (end - start) +" ms");
 		} catch (Exception e) {
 			throw new RuntimeException("zip error from ZipUtils",e);
 		}finally{

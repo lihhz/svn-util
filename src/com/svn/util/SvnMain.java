@@ -16,6 +16,7 @@ import com.svn.util.file.FileUtil;
 import com.svn.util.file.PropertyUtil;
 import com.svn.util.file.ResolveClasspath;
 import com.svn.util.file.ZipUtil;
+import com.svn.util.log.Logger;
 import com.svn.util.mail.SendEmail;
 import com.svn.util.system.ClipboardSupport;
 import com.svn.util.system.ConsoleUtil;
@@ -30,21 +31,21 @@ public class SvnMain {
 	 */
 	private static void packFiles(String content) throws FileNotFoundException, RuntimeException {
 		if (StringUtils.isEmpty(content)) {
-			System.out.println("发生异常或者没有发生变化.");
+			Logger.normal("发生异常或者没有发生变化.");
 			return;
 		}
 		// 获取svn配置和输出路径配置
 		final String PROJECT_PATH = PropertyUtil.getProjectPath(), TARGET_PAHT = PropertyUtil.getTargetPath();
 		if (StringUtils.isEmpty(PROJECT_PATH)) {
-			System.out.println("应用程序无法获取conf.properties中的projectPath，请检查配置文件.");
+			Logger.error("应用程序无法获取conf.ini中的projectPath，请检查配置文件.");
 			return;
 		}
 		if (StringUtils.isEmpty(TARGET_PAHT)) {
-			System.out.println("应用程序无法获取conf.properties中的targetPath，请检查配置文件.");
+			Logger.error("应用程序无法获取conf.ini中的targetPath，请检查配置文件.");
 			return;
 		}
 
-		System.out.println(StringUtils.COUNTER++ + ".开始组装文件");
+		Logger.step("开始组装文件");
 		String[] contents = content.split("\r\n");
 		for (int i = 0; i < contents.length; i++) {
 			String line = contents[i];
@@ -59,7 +60,7 @@ public class SvnMain {
 			while (matcher.find()) {
 				String relativePath = matcher.group(0);
 				if (relativePath.contains(".") && !relativePath.equals(".")) {// 只处理文件
-					System.out.println(String.format("...正在处理文件：%s", relativePath));
+					Logger.normal(String.format("...正在处理文件：%s", relativePath));
 					String oldPath = PROJECT_PATH + File.separator + relativePath;
 					List<Map<String, String>> classpathList = ResolveClasspath.getInfo();
 					boolean isInClasspath = false;
@@ -109,11 +110,11 @@ public class SvnMain {
 					}
 				} else {
 					// TODO:这里处理的是文件夹，先不管。因为空文件夹不必处理
-					System.out.println("  文件夹暂不处理");
+					Logger.info("空文件夹暂不处理");
 				}
 			}
 		}
-		System.out.println("---------------组装文件结束---------------");
+		Logger.info("组装文件结束");
 		confirm(TARGET_PAHT);
 
 	}
@@ -126,7 +127,7 @@ public class SvnMain {
 	private static void confirm(String targetPath) {
 		try {
 			// Scanner scanner = new Scanner(System.in);
-			System.out.println(StringUtils.COUNTER++ + ".是否生成zip压缩文件?(y/n)");
+			Logger.step("是否生成zip压缩文件?(y/n)");
 			boolean hasZip = false;
 			// 判断是否还有输入
 			while (ConsoleUtil.hasNext()) {
@@ -134,42 +135,40 @@ public class SvnMain {
 				if (str.equalsIgnoreCase("y")) {
 					ZipUtil.toZip(FileUtil.getRealFilePath(targetPath),
 							new FileOutputStream(FileUtil.getRealFilePath(targetPath + ".zip")), true);
-					System.out.println("==文件压缩成功.");
 					hasZip = true;
 				}
 				if (str.equalsIgnoreCase("y") || str.equalsIgnoreCase("n")) {
 					break;
 				} else {
-					System.out.println("==输入字符非法,请重新输入!");
+					Logger.error("输入字符非法,请重新输入!");
 				}
 			}
-			System.out.println(StringUtils.COUNTER++ + ".是否删除之前生成的文件夹?(y/n)");
+			Logger.step("是否删除之前生成的文件夹?(y/n)");
 			while (ConsoleUtil.hasNext()) {
 				String str = ConsoleUtil.readLine();
 				if (str.equalsIgnoreCase("y")) {
 					FileUtil.delFolder(FileUtil.getRealFilePath(targetPath));
-					System.out.println("之前生成的文件夹删除成功");
+					Logger.info("之前生成的文件夹删除成功");
 				}
 				if (str.equalsIgnoreCase("y") || str.equalsIgnoreCase("n")) {
 					break;
 				} else {
-					System.out.println("输入字符非法,请重新输入!");
+					Logger.error("输入字符非法,请重新输入!");
 				}
 			}
 			if(hasZip){
-				System.out.println(StringUtils.COUNTER++ + ".是否生成默认邮件?(y/n)");
+				Logger.step("是否生成默认邮件?(y/n)");
 				while (ConsoleUtil.hasNext()) {
 					String str = ConsoleUtil.readLine();
 					if (str.equalsIgnoreCase("y")) {
 						System.out.println(ClipboardSupport.getSysClipboardText());
 						SendEmail.sendEmail("升级内容", "升级内容:<ol>"+ClipboardSupport.getSysClipboardText()+"</ol>", 
 								FileUtil.getRealFilePath(targetPath + ".zip"));
-						System.out.println("之前生成的文件夹删除成功");
 					}
 					if (str.equalsIgnoreCase("y") || str.equalsIgnoreCase("n")) {
 						break;
 					} else {
-						System.out.println("输入字符非法,请重新输入!");
+						Logger.error("输入字符非法,请重新输入!");
 					}
 				}
 			}
@@ -184,11 +183,11 @@ public class SvnMain {
 	private static void checkPath() {
 		// 校验配置文件，目前主要是校验linux和Windows的路径问题
 		if (!FileUtil.checkPath(PropertyUtil.getProjectPath())) {
-			System.out.println("项目路径与操作系统不匹配，请检查后重试！");
+			Logger.error("项目路径与操作系统不匹配，请检查后重试！");
 			System.exit(0);
 		}
 		if (!FileUtil.checkPath(PropertyUtil.getTargetPath())) {
-			System.out.println("输出路径与操作系统不匹配，请检查后重试！");
+			Logger.error("输出路径与操作系统不匹配，请检查后重试！");
 			System.exit(0);
 		}	
 	}
@@ -214,20 +213,20 @@ public class SvnMain {
 				desktopPath += File.separator+"Desktop";
 			}
 
-			System.out.println("******************************************************************************");
-			System.out.println("检测到你已配置默认输出到桌面.");
-			System.out.println("如需取消,请修改conf.properties中defaultDisktop为0并设置targetPath!");
-			System.out.println("读取桌面路径为:" + desktopPath);
-			System.out.println("设置输出路径为:" + desktopPath + File.separator + "cpams");
-			System.out.println("******************************************************************************");
+			Logger.normal("******************************************************************************");
+			Logger.normal("检测到你已配置默认输出到桌面.");
+			Logger.normal("如需取消,请修改conf.properties中defaultDisktop为0并设置targetPath!");
+			Logger.normal("读取桌面路径为:" + desktopPath);
+			Logger.normal("设置输出路径为:" + desktopPath + File.separator + "cpams");
+			Logger.normal("******************************************************************************");
 			PropertyUtil.writeConfProperties("targetPath", desktopPath + File.separator + "cpams");
 		}
 		while (true) {
 			packFiles(SvnUtil.getChangeStr());
-			System.out.println("本次运行结束!");
+			Logger.normal("本次运行结束!");
 			String str = ConsoleUtil.readLine("输入y继续运行,输入其它程序退出:");
 			if (!str.equalsIgnoreCase("y")) {
-				System.out.println("程序运行结束,程序退出!");
+				Logger.normal("程序运行结束,程序退出!");
 				break;
 			}
 			// scanner.close();

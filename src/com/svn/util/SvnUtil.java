@@ -22,6 +22,7 @@ import org.tmatesoft.svn.core.wc2.SvnTarget;
 
 import com.svn.util.encrypt.DeEnCode;
 import com.svn.util.file.PropertyUtil;
+import com.svn.util.log.Logger;
 import com.svn.util.system.ClipboardSupport;
 import com.svn.util.system.ConsoleUtil;
 /**
@@ -46,7 +47,7 @@ public class SvnUtil {
 		String account = PropertyUtil.getUserAccount(),pass=PropertyUtil.getPassword();
 		try{
 			if(StringUtils.isEmpty(account)){
-				System.out.println("没有找到用户信息!");
+				Logger.warn("没有找到用户信息!");
 	            account = ConsoleUtil.readLine(StringUtils.COUNTER++ + ".请输入用户名:");  
 	            pass = ConsoleUtil.readPassword(StringUtils.COUNTER++ + ".请输入密码:");
 			}else{
@@ -62,7 +63,7 @@ public class SvnUtil {
 						bVersion = Long.parseLong(v);
 						break;
 					}catch(NumberFormatException e){
-						System.out.println("起始版本号无效,请重新输入!");
+						Logger.warn("起始版本号无效,请重新输入!");
 					}
 				}
 				while(true){
@@ -71,13 +72,13 @@ public class SvnUtil {
 						eVersion = Long.parseLong(v);
 						break;
 					}catch(NumberFormatException e){
-						System.out.println("截止版本号无效,请重新输入!");
+						Logger.warn("截止版本号无效,请重新输入!");
 					}
 				}
 				if(bVersion <= eVersion){
 					break;
 				}else{
-					System.out.println("错误:结束版本号["+eVersion+"]大于起始版本号["+bVersion+"]");
+					Logger.warn("结束版本号["+eVersion+"]大于起始版本号["+bVersion+"]");
 				}
 			}
             
@@ -92,7 +93,7 @@ public class SvnUtil {
 			//注意在配置文件中svnUri不能是Unicode
 			log.setSingleTarget(SvnTarget.fromURL(SVNURL.parseURIEncoded(PropertyUtil.getSvnUri())));
 	
-			System.out.println(StringUtils.COUNTER++ + ".修改内容如下");
+			Logger.step("修改内容如下，将复制到剪贴板");
 			final StringBuffer msg = new StringBuffer();
 			log.setReceiver(new ISvnObjectReceiver<SVNLogEntry>() {
 				public void receive(SvnTarget svnTarget, SVNLogEntry svnLogEntry) throws SVNException {
@@ -104,7 +105,7 @@ public class SvnUtil {
 			            Matcher m = p.matcher(str);   
 						msg.append("<li>").append(m.replaceAll("")).append("</li>");
 					}
-					System.out.println("   " + str);
+					Logger.normal("   " + str);
 					Map<String, SVNLogEntryPath> map = svnLogEntry.getChangedPaths();
 					if (map.size() > 0) {
 						Set<String> set = map.keySet();
@@ -121,13 +122,11 @@ public class SvnUtil {
 			log.run();
 			// 将升级信息添加到粘贴板
 			ClipboardSupport.setSysClipboardText(msg.toString());
-			System.out.println();
-			System.out.println("升级内容已复制到剪贴板");
-			System.out.println();
 		}catch( SVNAuthenticationException e){
 			e.printStackTrace();
 			auth = false;
-			System.out.println("鉴权失败!"+e.getMessage());
+			Logger.error("鉴权失败，可能是密码错误!");
+			Logger.error("原始错误信息："+e.getMessage());
 		}finally{
 			PropertyUtil.writeUserProperties("userAccount", auth?account:"");
 			PropertyUtil.writeUserProperties("password", auth?DeEnCode.encode(pass):"");

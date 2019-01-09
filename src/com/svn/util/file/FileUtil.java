@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.svn.util.StringUtils;
+import com.svn.util.log.Logger;
 
 /**
  * 操作文件<br/>
@@ -34,7 +35,7 @@ public class FileUtil {
 			delAllFile(folderPath); // 删除完里面所有内容
 			(new File(folderPath)).delete(); // 删除空文件夹
 		} catch (Exception e) {
-			System.out.println("文件夹删除失败!");
+			Logger.error("文件夹删除失败!"+folderPath);
 			e.printStackTrace();
 		}
 	}
@@ -123,7 +124,7 @@ public class FileUtil {
 				byte[] buffer = new byte[1024];
 				while ((byteread = is.read(buffer)) != -1) {
 					os.write(buffer, 0, byteread);
-					// 用下边代码会产生文件内容不正确
+					// 用下边代码会产生文件内容不正确。可能api不够熟练导致
 					// bos.write内部实际上调用如下write(b, 0, b.length);，因此可以不需要做的这么复杂
 					// os.write(buffer);
 
@@ -132,7 +133,7 @@ public class FileUtil {
 				os.flush();
 			}
 		} catch (Exception e) {
-			System.out.println("复制单个文件操作出错");
+			Logger.error("复制单个文件操作出错");
 			e.printStackTrace();
 		} finally {
 			try {
